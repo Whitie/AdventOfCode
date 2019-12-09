@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from collections import defaultdict
-from queue import LifoQueue
+from queue import Empty, LifoQueue
 
 
 OPCODE_PARAMS = [None, 3, 3, 1, 1, 2, 2, 3, 3, 1]
@@ -126,3 +126,19 @@ class IntcodeComputer:
 
     def _opcode_09(self, a):
         self.relative_base += self.code[a]
+
+
+def run_fast(code, init=None, inputs=None):
+    ic = IntcodeComputer(code, init=init)
+    if inputs:
+        for inp in reversed(inputs):
+            ic.in_queue.put(inp)
+    ic.run()
+    tmp = []
+    while True:
+        try:
+            tmp.append(ic.output)
+        except Empty:
+            break
+    for out in reversed(tmp):
+        print(tmp)
