@@ -1,40 +1,49 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from collections import defaultdict
 from queue import LifoQueue
 
 
-MEMORY = 10000
-OPCODE_PARAMS = {
-    1: 3,
-    2: 3,
-    3: 1,
-    4: 1,
-    5: 2,
-    6: 2,
-    7: 3,
-    8: 3,
-    9: 1,
-}
+OPCODE_PARAMS = [None, 3, 3, 1, 1, 2, 2, 3, 3, 1]
+OPCODE_HALT = 99
 
 
 class CPUError(Exception):
     pass
 
 
+class Memory(defaultdict):
+
+    def _check_key(self, key):
+        if key < 0:
+            raise TypeError(f'Address cannot be negative: {key}')
+
+    def __setitem__(self, key, value):
+        self._check_key(key)
+        return defaultdict.__setitem__(self, key, value)
+
+    def __getitem__(self, key):
+        self._check_key(key)
+        return defaultdict.__getitem__(self, key)
+
+
 def _parse_instruction(instruction):
-    tmp, opcode = divmod(instruction, 100)
-    modes = []
-    for _ in range(3):
-        tmp, mode = divmod(tmp, 10)
-        modes.append(mode)
+    opcode = instruction % 100
+    modes = [
+        (instruction // 100) % 10,
+        (instruction // 1000) % 10,
+        (instruction // 10000) % 10,
+    ]
     return opcode, modes
 
 
 class IntcodeComputer:
 
     def __init__(self, code, in_queue=None, out_queue=None, init=None):
-        self.code = [int(x) for x in code.split(',')] + [0] * MEMORY
+        self.code = Memory(
+            int, [(i, int(x)) for i, x in enumerate(code.split(','))]
+        )
         self.in_queue = in_queue or LifoQueue()
         self.out_queue = out_queue or LifoQueue()
         self.init = init
@@ -59,21 +68,25 @@ class IntcodeComputer:
     def output(self):
         return self.out_queue.get_nowait()
 
+    def step(self):
+        opcode, modes = _parse_instruction(self.code[self.pc])
+        self.pc += 1
+        if opcode == OPCODE_HALT:
+            self.halt = True
+            return OPCODE_HALT
+        params = self._get_params(opcode, modes)
+        self.pc += len(params)
+        try:
+            method = getattr(self, f'_opcode_{opcode:02d}')
+            method(*params)
+        except AttributeError:
+            raise CPUError(f'Unknown Opcode {opcode}')
+
     def run(self):
         self.halt = False
         while True:
-            opcode, modes = _parse_instruction(self.code[self.pc])
-            self.pc += 1
-            if opcode == 99:
-                self.halt = True
+            if self.step():
                 break
-            params = self._get_params(opcode, modes)
-            self.pc += len(params)
-            try:
-                method = getattr(self, f'_opcode_{opcode:02d}')
-                method(*params)
-            except AttributeError:
-                raise CPUError(f'Unbekannter Opcode {opcode}')
 
     def _opcode_01(self, a, b, target):
         self.code[target] = self.code[a] + self.code[b]
