@@ -42,11 +42,12 @@ def main(filename):
         if a_count > count:
             point = asteroid
             count = a_count
-    print(f'X: {point.x}, Y: {point.y} DETECTION: {count}')
+    return count, point
 
 
 if __name__ == '__main__':
     try:
-        main(sys.argv[1])
+        count, point = main(sys.argv[1])
+        print(f'X: {point.x}, Y: {point.y} DETECTION: {count}')
     except IndexError:
         print(f'Usage: {sys.argv[0]} <filename>')
