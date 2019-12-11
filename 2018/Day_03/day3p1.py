@@ -30,19 +30,32 @@ def fill_area(area, x, y, width, height):
     return area
 
 
+def check_overlapping(area, x, y, width, height):
+    for row in range(y, y+height):
+        for square in range(x, x+width):
+            if area[(square, row)] != 1:
+                return False
+    return True
+
+
 def main(filename):
     inp = get_input(filename)
     area = defaultdict(int)
+    claims = []
     for line in inp:
         match = LINE_RE.search(line)
         if match:
-            id, x, y, width, height = map(int, match.groups())
-            area = fill_area(area, x, y, width, height)
+            claims.append(tuple(map(int, match.groups())))
+            area = fill_area(area, *claims[-1][1:])
     count = 0
     for square in area.values():
         if square > 1:
             count += 1
-    print(count)
+    print(f'Part 1: {count}')
+    for claim in claims:
+        if check_overlapping(area, *claim[1:]):
+            print(f'Part 2: #{claim[0]}')
+            break
 
 
 if __name__ == '__main__':
