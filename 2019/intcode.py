@@ -141,4 +141,4 @@ def run_fast(code, init=None, inputs=None):
         except Empty:
             break
     for out in reversed(tmp):
-        print(tmp)
+        print(out)
