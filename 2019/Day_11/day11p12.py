@@ -61,8 +61,10 @@ class Robot:
 
 def print_hull(hull, robot):
     keys = hull.keys()
-    min_x, max_x = min(keys, key=itemgetter(0))[0], max(keys, key=itemgetter(0))[0]
-    min_y, max_y = min(keys, key=itemgetter(1))[1], max(keys, key=itemgetter(1))[1]
+    min_x = min(keys, key=itemgetter(0))[0]
+    max_x = max(keys, key=itemgetter(0))[0]
+    min_y = min(keys, key=itemgetter(1))[1]
+    max_y = max(keys, key=itemgetter(1))[1]
     for row in range(max_y, min_y - 1, -1):
         print()
         for panel in range(min_x, max_x):
