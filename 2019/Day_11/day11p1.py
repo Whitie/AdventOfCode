@@ -23,7 +23,7 @@ class Panel:
         self.count = 0
 
     def __str__(self):
-        return '#' if self.color else '.'
+        return '#' if self.color else ' '
 
 
 class Robot:
@@ -63,7 +63,7 @@ def print_hull(hull, robot):
     keys = hull.keys()
     min_x, max_x = min(keys, key=itemgetter(0))[0], max(keys, key=itemgetter(0))[0]
     min_y, max_y = min(keys, key=itemgetter(1))[1], max(keys, key=itemgetter(1))[1]
-    for row in range(max_y, min_y, -1):
+    for row in range(max_y, min_y - 1, -1):
         print()
         for panel in range(min_x, max_x):
             pos = panel, row
@@ -74,11 +74,11 @@ def print_hull(hull, robot):
     print()
 
 
-def main(filename):
+def main(filename, part=1):
     out = Queue()
     hull = defaultdict(Panel)
     with open(filename, 'r') as fp:
-        ic = IntcodeComputer(fp.read(), out_queue=out, init=0)
+        ic = IntcodeComputer(fp.read(), out_queue=out, init=part-1)
     ic_thread = Thread(target=ic.run)
     ic_thread.start()
     robot = Robot()
@@ -101,6 +101,6 @@ def main(filename):
 
 if __name__ == '__main__':
     try:
-        main(sys.argv[1])
+        main(sys.argv[1], int(sys.argv[2]))
     except IndexError:
-        print(f'Usage: {sys.argv[0]} <filename>')
+        print(f'Usage: {sys.argv[0]} <filename> <part>')
