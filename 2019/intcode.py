@@ -74,6 +74,15 @@ class IntcodeComputer:
     def output(self):
         return self.out_queue.get_nowait()
 
+    def get_output(self):
+        out = []
+        while True:
+            try:
+                out.append(self.output)
+            except Empty:
+                break
+        return reversed(out)
+
     def step(self):
         opcode, modes = _parse_instruction(self.code[self.pc])
         self.pc += 1
@@ -140,11 +149,4 @@ def run_fast(code, init=None, inputs=None):
         for inp in reversed(inputs):
             ic.in_queue.put(inp)
     ic.run()
-    tmp = []
-    while True:
-        try:
-            tmp.append(ic.output)
-        except Empty:
-            break
-    for out in reversed(tmp):
-        print(out)
+    return ic.get_output()
