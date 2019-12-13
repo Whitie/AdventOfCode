@@ -53,6 +53,12 @@ class IntcodeComputer:
         self.halt = None
         self.relative_base = 0
 
+    @classmethod
+    def from_file(cls, filename, in_queue=None, out_queue=None, init=None):
+        with open(filename, 'r') as fp:
+            code = fp.read().strip()
+        return cls(code, in_queue, out_queue, init)
+
     def _get_params(self, opcode, modes):
         params = []
         for i in range(OPCODE_PARAMS[opcode]):
