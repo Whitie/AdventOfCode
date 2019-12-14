@@ -13,6 +13,7 @@ from intcode import IntcodeComputer  # noqa: E402
 
 
 INPUT_FILE = 'input.txt'
+TILES = [' ', '|', '#', '-', 'O']
 
 
 def chunks(iterable, size):
@@ -31,6 +32,11 @@ def main(filename):
     max_x, _ = max(grid.keys(), key=itemgetter(0))
     _, max_y = max(grid.keys(), key=itemgetter(1))
     print(max_x, max_y)
+    count = 0
+    for tile in grid.values():
+        if tile == 2:
+            count += 1
+    print(count)
 
 
 if __name__ == '__main__':
