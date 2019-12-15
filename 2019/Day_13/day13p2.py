@@ -4,22 +4,12 @@
 import os
 import sys
 
-from collections import defaultdict
-from operator import itemgetter
-
 sys.path.insert(0, os.path.abspath('..'))
 
 from intcode import IntcodeComputer  # noqa: E402
 
 
 INPUT_FILE = 'input.txt'
-TILES = [' ', '|', '#', '-', 'O']
-
-
-def chunks(iterable, size):
-    it = list(iterable)
-    for i in range(0, len(it), size):
-        yield it[i:i+size]
 
 
 def main(filename):
