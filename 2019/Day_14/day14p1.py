@@ -24,9 +24,32 @@ def parse_input(filename):
     return data
 
 
+def get_ore(fuel, data):
+    have = {k: 0 for k in data}
+    need = {k: 0 for k in data}
+    have['ORE'] = need['ORE'] = 0
+    need['FUEL'] = fuel
+    while fuel > 0:
+        for chem in need:
+            if chem == 'ORE' or need[chem] == 0:
+                continue
+            add = need[chem] - have[chem]
+            if add > 0:
+                r = ceil(add / data[chem][0])
+                have[chem] += data[chem][0] * r
+                for c, n in data[chem][1].items():
+                    need[c] += n * r
+                    if c != 'ORE':
+                        fuel += n * r
+            have[chem] -= need[chem]
+            fuel -= need[chem]
+            need[chem] = 0
+    return need['ORE']
+
+
 def main(filename):
     data = parse_input(filename)
-    print(data)
+    print('ORE:', get_ore(1, data))
 
 
 if __name__ == '__main__':
