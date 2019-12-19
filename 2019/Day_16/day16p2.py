@@ -48,10 +48,14 @@ def calculate_one_phase(inp):
 
 def main(filename):
     inp = get_input(filename)
-    for _ in range(PHASES):
+    offset = int(''.join([str(x) for x in inp[:7]]))
+    print('This takes tooo long...')
+    inp = inp * 10000
+    for i in range(PHASES):
         phase = calculate_one_phase(inp)
+        print(f'{i+1}) {phase[:8]}')
         inp = phase
-    print(''.join([str(x) for x in phase[:8]]))
+    print(''.join([str(x) for x in phase[offset:offset+8]]))
 
 
 if __name__ == '__main__':
