@@ -74,6 +74,9 @@ class IntcodeComputer:
     def output(self):
         return self.out_queue.get_nowait()
 
+    def write(self, value):
+        self.in_queue.put(value)
+
     def get_output(self):
         out = []
         while True:
