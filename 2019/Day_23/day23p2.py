@@ -21,6 +21,40 @@ def main(filename):
                                        addr)
         nodes.append(Thread(target=ic.run))
         nodes[-1].start()
+    nat = None
+    idle = False
+    last = None
+    while True:
+        if idle and nat:
+            x, y = nat
+            queues[0][0].put_nowait(x)
+            queues[0][0].put_nowait(y)
+            print('NAT sending', x, y)
+            if y == last:
+                print('TWICE in a row:', y)
+                break
+            last = y
+        idle = False
+        sendout = []
+        for qin, qout in queues:
+            try:
+                out = qout.get_nowait()
+                if out:
+                    x = qout.get_nowait()
+                    y = qout.get_nowait()
+                    print(f'SEND TO {out}: X: {x}, Y: {y}')
+                    if out == 255:
+                        nat = x, y
+                    else:
+                        queues[out][0].put_nowait(x)
+                        queues[out][0].put_nowait(y)
+                        sendout.append(out)
+            except Empty:
+                pass
+            for q in [x for x in range(50) if x not in sendout]:
+                queues[q][0].put_nowait(-1)
+            if not sendout:
+                idle = True
 
 
 if __name__ == '__main__':
