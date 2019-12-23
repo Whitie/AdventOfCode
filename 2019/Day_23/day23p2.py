@@ -21,36 +21,6 @@ def main(filename):
                                        addr)
         nodes.append(Thread(target=ic.run))
         nodes[-1].start()
-    nat = [-1, -1]
-    idle = 0
-    last_y = None
-    run = True
-    while run:
-        if idle >= 50:
-            queues[0][0].put_nowait(nat[0])
-            queues[0][0].put_nowait(nat[1])
-        idle = 0
-        for qin, qout in queues:
-            try:
-                out = qout.get_nowait()
-                if out:
-                    x = qout.get_nowait()
-                    y = qout.get_nowait()
-                    # print(f'SEND TO {out}: X: {x}, Y: {y}')
-                    if out == 255:
-                        print(f'SEND TO {out}: X: {x}, Y: {y}')
-                        nat = [x, y]
-                        if y == last_y:
-                            print('TWICE:', y)
-                            run = False
-                            break
-                        last_y = y
-                        continue
-                    queues[out][0].put_nowait(x)
-                    queues[out][0].put_nowait(y)
-            except Empty:
-                idle += 1
-                qin.put_nowait(-1)
 
 
 if __name__ == '__main__':
