@@ -7,6 +7,11 @@ class Point:
         self.x = x
         self.y = y
 
+    def __str__(self):
+        return f'Point({self.x}, {self.y})'
+
+    __repr__ = __str__
+
     @property
     def neighbors(self):
         return (self.left, self.right, self.up, self.down)
