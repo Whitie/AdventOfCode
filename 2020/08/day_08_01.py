@@ -30,9 +30,7 @@ def main():
     visited = set()
     pc = 0
     acc = 0
-    while True:
-        if pc in visited:
-            break
+    while pc not in visited:
         visited.add(pc)
         try:
             cmd, param = code[pc].split(' ', 1)
