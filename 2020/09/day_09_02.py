@@ -30,6 +30,23 @@ def main():
     numbers, preamble = list(map(int, read_input(INPUT))), 25
     index, number = get_first_invalid(numbers, preamble)
     numbers = numbers[:index]
+    loop = 0
+    end = False
+    while not end:
+        sum_ = 0
+        inner = loop
+        for value in numbers[loop:]:
+            sum_ += value
+            if sum_ == number:
+                set_ = numbers[loop:inner]
+                xmas = min(set_) + max(set_)
+                print(f'{min(set_)} + {max(set_)} = {xmas}')
+                end = True
+                break
+            elif sum_ > number:
+                break
+            inner += 1
+        loop += 1
 
 
 if __name__ == '__main__':
