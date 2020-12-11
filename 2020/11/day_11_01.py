@@ -35,10 +35,18 @@ def get_occupied_count(y, x, area):
         (y+1, x-1), (y+1, x), (y+1, x+1),
     )
     count = 0
-    for y, row in enumerate(area):
-        for x, seat in enumerate(row):
-            if seat == OCCUPIED and (y, x) in positions:
+    for ypos, xpos in positions:
+        if ypos < 0 or xpos < 0:
+            continue
+        try:
+            if area[ypos][xpos] == OCCUPIED:
                 count += 1
+        except IndexError:
+            pass
+    #for y, row in enumerate(area):
+    #    for x, seat in enumerate(row):
+    #        if seat == OCCUPIED and (y, x) in positions:
+    #            count += 1
     return count
 
 
