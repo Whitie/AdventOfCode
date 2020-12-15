@@ -22,14 +22,14 @@ def main():
     # numbers = TEST4
     numbers = read_input(INPUT)
     positions = dict((n, i) for i, n in enumerate(numbers[:-1], start=1))
-    for round in range(len(numbers)+1, ROUNDS+1):
+    for round in range(len(numbers), ROUNDS):
         last = numbers[-1]
         if last in positions:
-            num = round - 1 - positions[last]
+            num = round - positions[last]
             numbers.append(num)
         else:
             numbers.append(0)
-        positions[last] = round - 1
+        positions[last] = round
     print(numbers[-1])
 
 
