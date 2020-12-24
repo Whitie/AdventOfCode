@@ -25,12 +25,6 @@ def read_input(filepath):
         return [line.strip() for line in fp if line.strip()]
 
 
-def _move(move, pos):
-    x, y = pos
-    dx, dy = MOVES[move]
-    return (x + dx, y + dy)
-
-
 def main():
     # lines = read_input(TEST)
     lines = read_input(INPUT)
@@ -38,7 +32,8 @@ def main():
     for line in lines:
         pos = (0, 0)
         for move in MOVE_RE.findall(line):
-            pos = _move(move, pos)
+            dx, dy = MOVES[move]
+            pos = (pos[0] + dx, pos[1] + dy)
         black_tiles ^= {pos}
     print(len(black_tiles))
 
