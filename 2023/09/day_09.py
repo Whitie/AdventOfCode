@@ -31,7 +31,6 @@ def get_next(diffs):
 
 
 def find_next_element(seq):
-    seq.reverse()
     diffs = [seq]
     while True:
         seq = diff(seq)
@@ -45,10 +44,14 @@ def main():
     with INPUT.open() as fp:
         data = fp.read().strip()
     sequences = parse(data)
-    next_elements = []
-    for seq in sequences:
-        next_elements.append(find_next_element(list(seq)))
-    print(sum(next_elements))
+    part_1, part_2 = [], []
+    for sequence in sequences:
+        seq = list(sequence)
+        part_1.append(find_next_element(seq))
+        seq.reverse()
+        part_2.append(find_next_element(seq))
+    print(f'Part 1: {sum(part_1)}')
+    print(f'Part 2: {sum(part_2)}')
 
 
 if __name__ == '__main__':
